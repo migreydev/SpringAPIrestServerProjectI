@@ -43,7 +43,8 @@ public class Developer {
 	
 	@ManyToMany
 	@JoinTable(name="developers_worked_on_projects", joinColumns= {@JoinColumn(name="developers_dev_id")}, inverseJoinColumns={@JoinColumn(name="projects_project_id")})
-	private List<Project>ProjectsHasDevelopers = new ArrayList<>();
+	private List<Project>projectsHasDevelopers = new ArrayList<>();
+	
 	
 
 }

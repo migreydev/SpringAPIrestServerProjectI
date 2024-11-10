@@ -52,8 +52,11 @@ public class Project {
     @JoinColumn(name = "status_status_id")
     private Status status;
 	
-	@ManyToMany(mappedBy="ProjectsHasDevelopers")
+	@ManyToMany(mappedBy="projectsHasDevelopers")
 	private List<Developer>developersHasProjects = new ArrayList<>();
+	
+	@ManyToMany(mappedBy="projectsHasTechnologies")
+	private List<Technology>technologiesHasProjects = new ArrayList<>();
 	
 	
 
