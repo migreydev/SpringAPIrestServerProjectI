@@ -89,7 +89,7 @@ public class ProjectServiceImpl implements ProjectServiceI{
 	public ResponseEntity<ApiResponse<Project>> addProject(Project project) {
 		//Si el nombre del proyecto es nulo o vácio
 		if (project.getProjectName() == null || project.getProjectName().isEmpty()) {
-	       //Salta una excepcion indicando que ambos campos estan vacios.
+	       //Salta una excepcion indicando que el nombre del proyecto esta vacio.
 	        throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
 	    }
 		try {
@@ -107,5 +107,76 @@ public class ProjectServiceImpl implements ProjectServiceI{
 		
 	}
 	
+	/**
+	 * Busca un proyecto por su id.
+	 * 
+	 * @param id El ID del proyecto a buscar.
+	 * @return El proyecto correspondiente al id proporcionado.
+	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el id dado.
+	 */
+	@Override
+	public Project findProjectById(int id) {
+		
+		//Se obtiene el proyecto
+		Optional<Project> projectOptional =  projectRepository.findByProjectId(id);
+		
+		// Verificamos si el proyecto existe 
+		if(projectOptional.isPresent()) {
+			Project project = projectOptional.get();// Si el proyecto está presente, lo obtenemos
+			return project;  // Devolvemos el proyecto encontrado
+			
+		}else {
+			// Si no se encuentra el proyecto, lanzamos una excepción
+			throw new ExceptionProjectNotFound("Project not found");
+		}	
+	}
+
+
+	/**
+	 * Actualiza un proyecto existente por su ID.
+	 * 
+	 * @param id El ID del proyecto a actualizar.
+	 * @param project EL Project con los nuevos datos para actualizar.
+	 * @return Una respuesta con un mensaje indicando que el proyecto se actualizó.
+	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el ID proporcionado.
+	 * @throws RuntimeException Si ocurre un error durante la actualización del proyecto.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> editProject(int id, Project project) {
+		//Obtiene el project como Optional
+		Optional<Project> projectOptional = projectRepository.findById(id);
+		
+		//Si el proyecto no esta presente
+		if(!projectOptional.isPresent()) {
+			// Si no se encuentra el proyecto, lanzamos una excepción
+			throw new ExceptionProjectNotFound("Project not found with ID: " + project.getProjectId());
+		}
+		
+		try {
+			//Se almacena en una variable de tipo Project y se van seteando sus valores 
+			Project updateProject = projectOptional.get();
+			updateProject.setProjectName(project.getProjectName());
+			updateProject.setDescription(project.getDescription());
+			updateProject.setStart_date(project.getStart_date());
+			updateProject.setEnd_date(project.getEnd_date());
+			updateProject.setRepository_url(project.getRepository_url());
+			updateProject.setDemo_url(project.getDemo_url());
+			updateProject.setPicture(project.getPicture());
+			updateProject.setStatus(project.getStatus());
+			updateProject.setDevelopersHasProjects(project.getDevelopersHasProjects());
+			updateProject.setTechnologiesHasProjects(project.getTechnologiesHasProjects());
+			
+			//Se guarda el proyecto
+			projectRepository.save(updateProject);
+			//Se almacena un mensaje en la clase ApiReponse, indicando que se ha almacenado correctamente.
+			ApiResponse<Project> response = new ApiResponse<>("Project update correctly");
+			return ResponseEntity.status(HttpStatus.OK).body(response);	
+			
+		}catch (Exception e) {
+			 throw new RuntimeException("An unexpected error occurred while update the project.", e);
+		 }
+			
+	}
+
 
 }

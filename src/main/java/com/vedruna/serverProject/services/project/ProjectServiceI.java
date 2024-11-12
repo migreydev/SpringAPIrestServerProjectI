@@ -19,5 +19,11 @@ public interface ProjectServiceI {
 	//Método para agregar un project, devolviendo un ResponseEntity
 	ResponseEntity<ApiResponse<Project>>addProject(Project project);
 	
+	//Método para obtener un proyecto por ID
+	Project findProjectById(int id);
+	
+	//Método para editar un project, devolviendo un ResponseEntity
+	ResponseEntity<ApiResponse<Project>>editProject(int id, Project project);
+	
 	
 }
