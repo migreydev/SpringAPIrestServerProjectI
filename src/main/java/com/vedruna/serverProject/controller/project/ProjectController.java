@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vedruna.serverProject.dto.ProjectDTO;
 import com.vedruna.serverProject.exceptions.ExceptionErrorPage;
 import com.vedruna.serverProject.exceptions.ExceptionPageNotFound;
+import com.vedruna.serverProject.persistance.model.ApiResponse;
+import com.vedruna.serverProject.persistance.model.Project;
 import com.vedruna.serverProject.services.project.ProjectServiceI;
 
 @RestController
@@ -74,6 +78,17 @@ public class ProjectController {
 	@GetMapping("/projects/{word}")
 	public ResponseEntity<ProjectDTO> getProjectByNameWord(@PathVariable String word) {
 		return projectService.getProjectByName(word);
+	}
+	
+	/**
+	 * Método para guardar un proyecto.
+	 * 
+	 * @param project Objeto project.
+	 * @return Devuelve un ResponseEntity que contiene un mensaje indicando que se ha añadido correctamente.
+	 */
+	@PostMapping("/projects")
+	public ResponseEntity<ApiResponse<Project>> addProject(@RequestBody Project project){
+		return projectService.addProject(project);
 	}
 
 

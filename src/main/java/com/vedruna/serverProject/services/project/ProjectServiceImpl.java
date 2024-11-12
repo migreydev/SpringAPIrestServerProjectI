@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.vedruna.serverProject.dto.ProjectDTO;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
+import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
 import com.vedruna.serverProject.persistance.repository.project.ProjectRepository;
 
@@ -68,6 +71,41 @@ public class ProjectServiceImpl implements ProjectServiceI{
 		    }
 		
 		
-	}	
+	}
+
+	/**
+	 * Añade un nuevo proyecto.
+	 * 
+	 * Este método guarda un proyecto en el repositorio. Antes de hacerlo, valida que el nombre del proyecto no 
+	 * sea nulo o vacío. Si el nombre no es válido, se lanza una excepción ExceptionInvalidProjectData. 
+	 * Si el proyecto se guarda correctamente, se devuelve una respuesta con un mensaje. En caso de error, se lanza una excepcion RuntimeException.
+	 *
+	 * @param project que se va a añadir.
+	 * @return Un ResponseEntity con una clase ApiResponse generica que contiene un mensaje.
+	 * @throws ExceptionInvalidProjectData Si el nombre del proyecto es nulo o vacío.
+	 * @throws RuntimeException Si ocurre un error al guardar el proyecto.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> addProject(Project project) {
+		//Si el nombre del proyecto es nulo o vácio
+		if (project.getProjectName() == null || project.getProjectName().isEmpty()) {
+	       //Salta una excepcion indicando que ambos campos estan vacios.
+	        throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
+	    }
+		try {
+			//Guarda el proyecto en el repositorio.
+			projectRepository.save(project);
+			//Se almacena un mensaje en la clase ApiReponse, indicando que se ha almacenado correctamente.
+			ApiResponse<Project> response = new ApiResponse<>("Project saved correctly");
+			//Devuelve una ResponseEntity con el codigo 201 indicando que se ha creado correctamente.
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+			
+		 }catch (Exception e) {
+			 //Manejo de error
+			 throw new RuntimeException("An unexpected error occurred while saving the project.", e);
+		 }
+		
+	}
+	
 
 }
