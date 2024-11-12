@@ -25,10 +25,10 @@ public class Project {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="project_id")
-	private int project_id;
+	private int projectId;
 	
 	@Column(name="project_name")
-	private String project_name;
+	private String projectName;
 	
 	@Column(name="description")
 	private String description;

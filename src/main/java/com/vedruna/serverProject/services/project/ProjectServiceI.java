@@ -11,5 +11,8 @@ public interface ProjectServiceI {
 	// Método para obtener un listado de proyectos paginado
 	Page<ProjectDTO> getAllProjects(Pageable pageable);
 	
+	// Método para obtener un proyecto por su nombre, devolviendo un ResponseEntity
+	ResponseEntity<ProjectDTO> getProjectByName(String name);
+	
 	
 }

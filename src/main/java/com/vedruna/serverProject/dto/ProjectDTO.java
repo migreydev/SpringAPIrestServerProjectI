@@ -29,8 +29,8 @@ public class ProjectDTO {
 	private List<TechnologyDTO> technologiesHasProjectsDTO = new ArrayList<>();
 	
 	public ProjectDTO (Project project) {
-		this.project_id = project.getProject_id();
-		this.project_name = project.getProject_name();
+		this.project_id = project.getProjectId();
+		this.project_name = project.getProjectName();
 		this.description = project.getDescription();
 		this.start_date = project.getStart_date();
 		this.end_date = project.getEnd_date();
