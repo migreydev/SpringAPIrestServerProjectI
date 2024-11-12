@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -89,6 +90,22 @@ public class ProjectController {
 	@PostMapping("/projects")
 	public ResponseEntity<ApiResponse<Project>> addProject(@RequestBody Project project){
 		return projectService.addProject(project);
+	}
+	
+	/**
+	 * Método que maneja la actualización de un proyecto existente.
+	 * 
+	 * Este método recibe un ID de proyecto a través de la URL y un objeto `Project` 
+	 * en el cuerpo de la solicitud para actualizar los detalles del proyecto
+	 * 
+	 * @param id El ID del proyecto que se va a actualizar.
+	 * @param updateProject El objeto Project que contiene los datos actualizados del proyecto.
+	 * @return Una respuesta con el estado de la operación y un mensaje indicando si la actualización fue correcta.
+	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el ID proporcionado.
+	 */
+	@PutMapping("/projects/{id}")
+	public ResponseEntity<ApiResponse<Project>> updateProject(@PathVariable int id, @RequestBody Project updateProject) {	
+		return projectService.editProject(id, updateProject);
 	}
 
 
