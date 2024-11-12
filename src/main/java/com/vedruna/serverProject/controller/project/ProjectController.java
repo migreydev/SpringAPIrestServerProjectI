@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +62,19 @@ public class ProjectController {
             throw new ExceptionPageNotFound("Page not found: the page index is out of range.");
         }
     }
+	
+	/**
+	 * Método para obtener un proyecto por su nombre. Utiliza el parámetro de ruta {word}
+	 * para buscar un proyecto por su nombre.
+	 * 
+	 * @param word El nombre del proyecto que se desea buscar.
+	 * @return Devuelve un ResponseEntity que contiene un ProjectDTO, si el proyecto se encuentra.
+	 *         Si el proyecto no se encuentra, devuelve una excepción.
+	 */
+	@GetMapping("/projects/{word}")
+	public ResponseEntity<ProjectDTO> getProjectByNameWord(@PathVariable String word) {
+		return projectService.getProjectByName(word);
+	}
 
 
 }
