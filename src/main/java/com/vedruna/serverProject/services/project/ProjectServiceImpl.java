@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectServiceI{
 	 * Si el proyecto se guarda correctamente, se devuelve una respuesta con un mensaje. En caso de error, se lanza una excepcion RuntimeException.
 	 *
 	 * @param project que se va a añadir.
-	 * @return Un ResponseEntity con una clase ApiResponse generica que contiene un mensaje.
+	 * @return Una respuesta estructurada de la clase ApiReponse.
 	 * @throws ExceptionInvalidProjectData Si el nombre del proyecto es nulo o vacío.
 	 * @throws RuntimeException Si ocurre un error al guardar el proyecto.
 	 */
@@ -95,8 +95,8 @@ public class ProjectServiceImpl implements ProjectServiceI{
 		try {
 			//Guarda el proyecto en el repositorio.
 			projectRepository.save(project);
-			//Se almacena un mensaje en la clase ApiReponse, indicando que se ha almacenado correctamente.
-			ApiResponse<Project> response = new ApiResponse<>("Project saved correctly");
+			//Se almacena una respuesta estructurada de la clase ApiReponse.
+			ApiResponse<Project> response = new ApiResponse<>(HttpStatus.CREATED, "Project saved correctly");
 			//Devuelve una ResponseEntity con el codigo 201 indicando que se ha creado correctamente.
 			return ResponseEntity.status(HttpStatus.CREATED).body(response);
 			
@@ -137,7 +137,7 @@ public class ProjectServiceImpl implements ProjectServiceI{
 	 * 
 	 * @param id El ID del proyecto a actualizar.
 	 * @param project EL Project con los nuevos datos para actualizar.
-	 * @return Una respuesta con un mensaje indicando que el proyecto se actualizó.
+	 * @return Una respuesta estructurada de la clase ApiReponse.
 	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el ID proporcionado.
 	 * @throws RuntimeException Si ocurre un error durante la actualización del proyecto.
 	 */
@@ -149,13 +149,20 @@ public class ProjectServiceImpl implements ProjectServiceI{
 		//Si el proyecto no esta presente
 		if(!projectOptional.isPresent()) {
 			// Si no se encuentra el proyecto, lanzamos una excepción
-			throw new ExceptionProjectNotFound("Project not found with ID: " + project.getProjectId());
+			throw new ExceptionProjectNotFound("Project not found");
 		}
 		
 		try {
 			//Se almacena en una variable de tipo Project y se van seteando sus valores 
 			Project updateProject = projectOptional.get();
-			updateProject.setProjectName(project.getProjectName());
+			
+			if(!project.getProjectName().isEmpty() && project.getProjectName() != null) {
+				updateProject.setProjectName(project.getProjectName());				
+			}else {
+				//Salta una excepcion indicando que el nombre del proyecto esta vacio.
+		        throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
+			}
+			//Seteo de valores al objeto updateProject
 			updateProject.setDescription(project.getDescription());
 			updateProject.setStart_date(project.getStart_date());
 			updateProject.setEnd_date(project.getEnd_date());
@@ -168,14 +175,44 @@ public class ProjectServiceImpl implements ProjectServiceI{
 			
 			//Se guarda el proyecto
 			projectRepository.save(updateProject);
-			//Se almacena un mensaje en la clase ApiReponse, indicando que se ha almacenado correctamente.
-			ApiResponse<Project> response = new ApiResponse<>("Project update correctly");
+			//Se almacena una respuesta estructurada de la clase ApiReponse.
+			ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project update correctly");
 			return ResponseEntity.status(HttpStatus.OK).body(response);	
 			
 		}catch (Exception e) {
 			 throw new RuntimeException("An unexpected error occurred while update the project.", e);
 		 }
 			
+	}
+
+
+	/**
+	 * Elimina un proyecto.
+	 * 
+	 * Este método recibe un objeto `Project`, busca el proyecto correspondiente en 
+	 * la base de datos utilizando su ID y, si se encuentra, lo elimina.
+	 * 
+	 * @param project El objeto `Project` que contiene el ID del proyecto a eliminar.
+	 * @return Una respuesta estructurada de la clase ApiReponse.
+	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el ID.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> deleteProject(Project project) {
+		//Se busca el proyecto por su id
+		Optional<Project> optionalProject = projectRepository.findByProjectId(project.getProjectId());
+		//Si esta presente en nuestra BBDD
+		if(optionalProject.isPresent()) {
+			//Se almacena el proyecto en un objeto de tipo Project para proceder a eliminarlo
+			Project deleteProject = optionalProject.get();
+			projectRepository.delete(deleteProject); //Se elimina el proyecto 
+			//Se almacena una respuesta estructurada de la clase ApiReponse.
+			ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project delete correctly");
+			// Se devuelve una respuesta indicando que se ha eliminado
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+			
+		}else {
+			throw new ExceptionProjectNotFound("Project not found"); //Si el proyecto no es encontrado salta una excepción
+		}
 	}
 
 
