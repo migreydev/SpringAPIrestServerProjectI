@@ -24,22 +24,22 @@ public class Developer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="dev_id")
-	private int dev_id;
+	private int devId;
 	
 	@Column(name="dev_name")
-	private String dev_name;
+	private String devName;
 	
 	@Column(name="dev_surname")
-	private String dev_surname;
+	private String devSurname;
 	
 	@Column(name="email")
 	private String email;
 	
 	@Column(name="linkedin_url")
-	private String linkedin_url;
+	private String linkedinUrl;
 	
 	@Column(name="github_url")
-	private String github_url;
+	private String githubUrl;
 	
 	@ManyToMany
 	@JoinTable(name="developers_worked_on_projects", joinColumns= {@JoinColumn(name="developers_dev_id")}, inverseJoinColumns={@JoinColumn(name="projects_project_id")})

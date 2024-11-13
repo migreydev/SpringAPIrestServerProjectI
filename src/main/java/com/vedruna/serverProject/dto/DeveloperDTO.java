@@ -18,12 +18,12 @@ public class DeveloperDTO {
 	private String github_url;
 	
 	public DeveloperDTO(Developer developer) {
-		this.dev_id = developer.getDev_id();
-		this.dev_name = developer.getDev_name();
-		this.dev_surname = developer.getDev_surname();
+		this.dev_id = developer.getDevId();
+		this.dev_name = developer.getDevName();
+		this.dev_surname = developer.getDevSurname();
 		this.email = developer.getEmail();
-		this.linkedin_url = developer.getLinkedin_url();
-		this.github_url = developer.getGithub_url();
+		this.linkedin_url = developer.getLinkedinUrl();
+		this.github_url = developer.getGithubUrl();
 	
 	}
 	
