@@ -25,5 +25,8 @@ public interface ProjectServiceI {
 	//Método para editar un project, devolviendo un ResponseEntity
 	ResponseEntity<ApiResponse<Project>>editProject(int id, Project project);
 	
+	//Método para eliminar un proyecto, devolviendo un ResponseEntity
+	ResponseEntity<ApiResponse<Project>>deleteProject(Project project);
+	
 	
 }

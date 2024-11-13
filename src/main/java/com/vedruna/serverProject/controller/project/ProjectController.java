@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,7 +86,7 @@ public class ProjectController {
 	 * Método para guardar un proyecto.
 	 * 
 	 * @param project Objeto project.
-	 * @return Devuelve un ResponseEntity que contiene un mensaje indicando que se ha añadido correctamente.
+	 * @return Una respuesta estructurada.
 	 */
 	@PostMapping("/projects")
 	public ResponseEntity<ApiResponse<Project>> addProject(@RequestBody Project project){
@@ -100,12 +101,31 @@ public class ProjectController {
 	 * 
 	 * @param id El ID del proyecto que se va a actualizar.
 	 * @param updateProject El objeto Project que contiene los datos actualizados del proyecto.
-	 * @return Una respuesta con el estado de la operación y un mensaje indicando si la actualización fue correcta.
-	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el ID proporcionado.
+	 * @return Una respuesta estructurada.
 	 */
 	@PutMapping("/projects/{id}")
 	public ResponseEntity<ApiResponse<Project>> updateProject(@PathVariable int id, @RequestBody Project updateProject) {	
 		return projectService.editProject(id, updateProject);
+	}
+	
+	
+	/**
+	 * Elimina un proyecto por su ID.
+	 * 
+	 * Este método maneja una solicitud HTTP DELETE para eliminar un proyecto de la base de datos. 
+	 * Recibe un id del proyecto como parámetro y, si el proyecto existe, se procede 
+	 * a su eliminación.
+	 * 
+	 * @param id El identificador único del proyecto que se desea eliminar.
+	 * @return Una respuesta estructurada.
+	 * En caso de eliminación, devuelve una respuesta indicando que el proyecto fué eliminado.
+	 */
+	@DeleteMapping("/projects/{id}")
+	public ResponseEntity<ApiResponse<Project>> deleteProyect(@PathVariable int id){
+		//Busca el proyecto por su ID
+		Project project = projectService.findProjectById(id);
+		//Devuelve el proyecto encontrado al repositorio para proceder a su eliminación
+		return projectService.deleteProject(project);
 	}
 
 
