@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.vedruna.serverProject.exceptions.ExceptionErrorPage;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
 import com.vedruna.serverProject.exceptions.ExceptionPageNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
@@ -42,6 +45,26 @@ public class GlobalControllerError {
 	      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	 }
 	 
+	 // Maneja la excepción cuando el email del developer ya está en uso
+	 @ExceptionHandler(ExceptionInvalidDeveloperEmail.class)
+	 public ResponseEntity<ApiError> handleInvalidDeveloperEmail(ExceptionInvalidDeveloperEmail e) {
+	      ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage());
+	      return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+	 }
+	 
+	// Maneja la excepción cuando la url del linkedin del developer ya está en uso
+	@ExceptionHandler(ExceptionInvalidDeveloperLinkedin.class)
+	public ResponseEntity<ApiError> handleInvalidDeveloperLinkedin(ExceptionInvalidDeveloperLinkedin e) {
+	     ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage());
+	     return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+	}
+	
+	// Maneja la excepción cuando la url del gitHub del developer ya está en uso
+	@ExceptionHandler(ExceptionInvalidDeveloperGithub.class)
+	public ResponseEntity<ApiError> handleInvalidDeveloperGitHub(ExceptionInvalidDeveloperGithub e) {
+		   ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage());
+		   return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+	}
 	 
 	
 	
