@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
-import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
-import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Developer;
 import com.vedruna.serverProject.services.developer.DeveloperServiceI;

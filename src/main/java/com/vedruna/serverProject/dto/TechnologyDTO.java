@@ -14,7 +14,7 @@ public class TechnologyDTO {
 	private String tech_name;
 	
 	public TechnologyDTO(Technology technology) {
-		this.tech_id = technology.getTech_id();
-		this.tech_name = technology.getTech_name();
+		this.tech_id = technology.getTechId();
+		this.tech_name = technology.getTechName();
 	}
 }
