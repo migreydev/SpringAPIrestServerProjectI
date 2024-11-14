@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.vedruna.serverProject.exceptions.ExceptionDeveloperNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
@@ -82,6 +83,31 @@ public class DeveloperServiceImpl implements DeveloperServiceI{
 		     // Manejo de errores
 		     throw new RuntimeException("An unexpected error occurred while saving the developer.", e);
 		 }
+	}
+
+	/**
+	 * Elimina un developer de la base de datos según su ID.
+	 * 
+	 * Este método busca un developer en la base de datos utilizando el ID proporcionado.
+	 * Si el desarrollador existe, se elimina y se devuelve una respuesta estructurada. 
+	 * Si el desarrollador no se encuentra, se lanza una excepción `ExceptionDeveloperNotFound` con un mensaje de error.
+	 *
+	 * @param id El ID del developer que se desea eliminar.
+	 * @return Un objeto `ResponseEntity` que contiene una respuesta estructurada.
+	 * @throws ExceptionDeveloperNotFound Si no se encuentra un developer con el ID especificado.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Developer>> deleteDeveloper(int id) {
+		Optional<Developer> optionalDeveloper = developerRepository.findById(id);
+		
+		if(optionalDeveloper.isPresent()) {
+			Developer developer = optionalDeveloper.get();
+			developerRepository.delete(developer);
+			ApiResponse<Developer> response = new ApiResponse<>(HttpStatus.OK, "Developer delete correctly");
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}else {
+			throw new ExceptionDeveloperNotFound("Developer not found");
+		}
 	}
 
 }

@@ -9,5 +9,8 @@ public interface DeveloperServiceI {
 	
 	//Método para agregar un developer, devolviendo un ResponseEntity con respuesta estructurada
 	ResponseEntity<ApiResponse<Developer>>addDeveloper(Developer developer);
+	
+	//Método para eliminar un developer, devolviendo un ResponseEntity con una respuesta estructurada.
+	ResponseEntity<ApiResponse<Developer>> deleteDeveloper(int id);
 
 }

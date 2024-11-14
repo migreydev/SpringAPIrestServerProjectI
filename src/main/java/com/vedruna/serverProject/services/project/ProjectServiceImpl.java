@@ -137,53 +137,72 @@ public class ProjectServiceImpl implements ProjectServiceI{
 	 * 
 	 * @param id El ID del proyecto a actualizar.
 	 * @param project EL Project con los nuevos datos para actualizar.
+	 * Verifica que el nombre del proyecto sea único antes de realizar la actualización.
+	 * Si el nombre del proyecto ya existe para otro proyecto distinto al actual, se lanza una 
+	 * excepción
 	 * @return Una respuesta estructurada de la clase ApiReponse.
 	 * @throws ExceptionProjectNotFound Si no se encuentra un proyecto con el ID proporcionado.
 	 * @throws RuntimeException Si ocurre un error durante la actualización del proyecto.
 	 */
 	@Override
 	public ResponseEntity<ApiResponse<Project>> editProject(int id, Project project) {
-		//Obtiene el project como Optional
-		Optional<Project> projectOptional = projectRepository.findById(id);
-		
-		//Si el proyecto no esta presente
-		if(!projectOptional.isPresent()) {
-			// Si no se encuentra el proyecto, lanzamos una excepción
-			throw new ExceptionProjectNotFound("Project not found");
-		}
-		
-		try {
-			//Se almacena en una variable de tipo Project y se van seteando sus valores 
-			Project updateProject = projectOptional.get();
-			
-			if(!project.getProjectName().isEmpty() && project.getProjectName() != null) {
-				updateProject.setProjectName(project.getProjectName());				
-			}else {
-				//Salta una excepcion indicando que el nombre del proyecto esta vacio.
-		        throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
-			}
-			//Seteo de valores al objeto updateProject
-			updateProject.setDescription(project.getDescription());
-			updateProject.setStart_date(project.getStart_date());
-			updateProject.setEnd_date(project.getEnd_date());
-			updateProject.setRepository_url(project.getRepository_url());
-			updateProject.setDemo_url(project.getDemo_url());
-			updateProject.setPicture(project.getPicture());
-			updateProject.setStatus(project.getStatus());
-			updateProject.setDevelopersHasProjects(project.getDevelopersHasProjects());
-			updateProject.setTechnologiesHasProjects(project.getTechnologiesHasProjects());
-			
-			//Se guarda el proyecto
-			projectRepository.save(updateProject);
-			//Se almacena una respuesta estructurada de la clase ApiReponse.
-			ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project update correctly");
-			return ResponseEntity.status(HttpStatus.OK).body(response);	
-			
-		}catch (Exception e) {
-			 throw new RuntimeException("An unexpected error occurred while update the project.", e);
-		 }
-			
+	    // Obtiene el proyecto como Optional obtenido a traves del ID;
+	    Optional<Project> projectOptional = projectRepository.findById(id);
+	    
+	    // Si el proyecto no está presente
+	    if (!projectOptional.isPresent()) {
+	        // Si no se encuentra el proyecto, lanzamos una excepción
+	        throw new ExceptionProjectNotFound("Project not found");
+	    }
+
+	    try {
+	        // Se almacena en una variable de tipo Project
+	        Project updateProject = projectOptional.get();
+
+	        // Verificación del nombre del proyecto no es ni nulo ni está vacío.
+	        if (project.getProjectName() != null && !project.getProjectName().isEmpty()) {
+
+	            // Comprobamos si ya existe un proyecto con el mismo nombre, excluyendo el proyecto que estamos editando
+	            Optional<Project> existingProject = projectRepository.findByProjectName(project.getProjectName());
+	            
+	            // Si el proyecto con el mismo nombre ya existe y no es el mismo proyecto que estamos editando, lanzamos la excepción
+	            if (existingProject.isPresent() && existingProject.get().getProjectId() != updateProject.getProjectId()) {
+	                throw new ExceptionInvalidProjectData("Project name must be unique and cannot be duplicated.");
+	            }
+
+	            // Actualizamos el nombre del proyecto si es diferente
+	            updateProject.setProjectName(project.getProjectName());
+
+	        } else {
+	            // Si el nombre del proyecto está vacío o es nulo, lanzamos una excepción
+	            throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
+	        }
+
+	        // Seteo de los valores restantes al objeto updateProject
+	        updateProject.setDescription(project.getDescription());
+	        updateProject.setStart_date(project.getStart_date());
+	        updateProject.setEnd_date(project.getEnd_date());
+	        updateProject.setRepository_url(project.getRepository_url());
+	        updateProject.setDemo_url(project.getDemo_url());
+	        updateProject.setPicture(project.getPicture());
+	        updateProject.setStatus(project.getStatus());
+	        updateProject.setDevelopersHasProjects(project.getDevelopersHasProjects());
+	        updateProject.setTechnologiesHasProjects(project.getTechnologiesHasProjects());
+
+	        // Se guarda el proyecto actualizado
+	        projectRepository.save(updateProject);
+
+	        // Se almacena una respuesta estructurada de la clase ApiResponse
+	        ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project updated successfully");
+	        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+	    } catch (Exception e) {
+	        // Lanzamos una excepción más específica con el mensaje de error
+	        throw new RuntimeException("An unexpected error occurred while updating the project.", e);
+	    }
 	}
+
+
 
 
 	/**
