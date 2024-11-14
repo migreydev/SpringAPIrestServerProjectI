@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.vedruna.serverProject.exceptions.ExceptionInvalidTechnologyData;
+import com.vedruna.serverProject.exceptions.ExceptionTechnologyNotFound;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Technology;
 import com.vedruna.serverProject.persistance.repository.technology.TechnologyRepository;
@@ -64,5 +65,36 @@ public class TechnologyServiceImpl implements TechnologyServiceI{
 			throw new ExceptionInvalidTechnologyData("An unexpected error occurred while saving the technology.");
 		}
 		
+	}
+
+	/**
+	 * Elimina una Technology por su ID.
+	 * 
+	 * Este método recibe un ID de tecnología, verifica si existe en la base de datos y, si es así, la elimina.
+	 * Si la tecnología no se encuentra, lanza una excepción indicando que no se ha encontrado.
+	 *
+	 * @param id El ID de la tecnología a eliminar.
+	 * @return Una respuesta estructurada con el estado 200 (OK) y un mensaje que indica que la tecnología fue eliminada correctamente.
+	 * @throws ExceptionTechnologyNotFound Si no se encuentra la tecnología con el ID proporcionado.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Technology>> deleteTechnology(int id) {
+		//Se obtiene la tecnologia a través del parametro ID
+		Optional<Technology> optionalTechnology= technologyRepository.findById(id);
+		
+		//Si existe
+		if(optionalTechnology.isPresent()) {
+			//Se obtiene como object Technology
+			Technology technolgy = optionalTechnology.get();
+			//Se procede a la eliminación
+			technologyRepository.delete(technolgy);
+			//Respuesta estructurada
+			ApiResponse<Technology> response = new ApiResponse<>(HttpStatus.OK, "Technology deleted correctly");
+			//Devuelve una ResponseEntity con el codigo 200 indicando que se ha eliminado correctamente.
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+			
+		}else {
+			throw new ExceptionTechnologyNotFound("Technology not found");
+		}
 	}
 }

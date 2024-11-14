@@ -14,6 +14,7 @@ import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidTechnologyData;
 import com.vedruna.serverProject.exceptions.ExceptionPageNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
+import com.vedruna.serverProject.exceptions.ExceptionTechnologyNotFound;
 import com.vedruna.serverProject.persistance.model.ApiError;
 
 @RestControllerAdvice
@@ -83,5 +84,12 @@ public class GlobalControllerError {
 		     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 
+
+	// Maneja la excepción cuando no se encuentra un developer
+	@ExceptionHandler(ExceptionTechnologyNotFound.class)
+	public ResponseEntity<ApiError> handleTechnologyNotFoundException(ExceptionTechnologyNotFound e) {
+		    ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+	}
 
 }

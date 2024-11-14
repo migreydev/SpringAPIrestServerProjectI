@@ -11,5 +11,8 @@ public interface TechnologyServiceI {
 	//Método para agregar una technology, devolviendo un ResponseEntity
 	ResponseEntity<ApiResponse<Technology>> addTechnology(Technology technology);
 	
+	//Método para eliminar una technology, devolviendo un ResponseEntity
+	ResponseEntity<ApiResponse<Technology>> deleteTechnology(int id);
+	
 
 }
