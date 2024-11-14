@@ -17,4 +17,5 @@ public interface DeveloperRepository extends JpaRepository<Developer, Integer>{
 	// Método que devuelve un Developer opcional por su gitHub
 	Optional<Developer> findDeveloperByGithubUrl(String gitHub);
 
+
 }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.vedruna.serverProject.exceptions.ExceptionDeveloperNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionErrorPage;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
@@ -64,6 +65,13 @@ public class GlobalControllerError {
 	public ResponseEntity<ApiError> handleInvalidDeveloperGitHub(ExceptionInvalidDeveloperGithub e) {
 		   ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage());
 		   return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+	}
+	
+	// Maneja la excepción cuando no se encuentra un developer
+	@ExceptionHandler(ExceptionDeveloperNotFound.class)
+	public ResponseEntity<ApiError> handleDeveloperNotFoundException(ExceptionDeveloperNotFound e) {
+		    ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
 	 
 	
