@@ -11,6 +11,7 @@ import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidTechnologyData;
 import com.vedruna.serverProject.exceptions.ExceptionPageNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
 import com.vedruna.serverProject.persistance.model.ApiError;
@@ -75,7 +76,12 @@ public class GlobalControllerError {
 	}
 	 
 	
-	
+	//Maneja la excepción cuando los datos del proyecto no son válidos
+	@ExceptionHandler(ExceptionInvalidTechnologyData.class)
+	public ResponseEntity<ApiError> invalidTechnologyData(ExceptionInvalidTechnologyData e) {
+		     ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+		     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
 
 
 }
