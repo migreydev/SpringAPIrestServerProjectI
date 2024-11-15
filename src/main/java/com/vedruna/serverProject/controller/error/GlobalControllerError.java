@@ -11,6 +11,7 @@ import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidStatusData;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidTechnologyData;
 import com.vedruna.serverProject.exceptions.ExceptionPageNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
@@ -90,6 +91,13 @@ public class GlobalControllerError {
 	public ResponseEntity<ApiError> handleTechnologyNotFoundException(ExceptionTechnologyNotFound e) {
 		    ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
 		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+	}
+	
+	// Maneja la excepción cuando el status no es valido
+	@ExceptionHandler(ExceptionInvalidStatusData.class)
+	public ResponseEntity<ApiError> handleInvalidStatusData(ExceptionInvalidStatusData e) {
+			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 
 }

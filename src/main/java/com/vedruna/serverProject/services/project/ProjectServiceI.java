@@ -28,5 +28,9 @@ public interface ProjectServiceI {
 	//Método para eliminar un proyecto, devolviendo un ResponseEntity
 	ResponseEntity<ApiResponse<Project>>deleteProject(Project project);
 	
+	//Método para pasar un proyecto de Development a Testing, devolviendo un ResponseEntity
+	ResponseEntity<ApiResponse<Project>>toTestingProyect(int id);
 	
+	//Método para pasar un proyecto de Testing a Production, devolviendo un ResponseEntity
+	ResponseEntity<ApiResponse<Project>>toProductionProyect(int id);
 }

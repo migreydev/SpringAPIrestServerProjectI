@@ -14,9 +14,11 @@ import org.springframework.stereotype.Service;
 
 import com.vedruna.serverProject.dto.ProjectDTO;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidStatusData;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
+import com.vedruna.serverProject.persistance.model.Status;
 import com.vedruna.serverProject.persistance.repository.project.ProjectRepository;
 
 @Service
@@ -231,6 +233,90 @@ public class ProjectServiceImpl implements ProjectServiceI{
 			
 		}else {
 			throw new ExceptionProjectNotFound("Project not found"); //Si el proyecto no es encontrado salta una excepción
+		}
+	}
+
+
+	/**
+	 * Cambia el estado de un proyecto de "Development" a "Testing", validando que 
+	 * el estado inicial sea "Development" antes de realizar la actualización. 
+	 * Establece el ID del estado correspondiente en el proyecto y lo actualiza en la base de datos.
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta HTTP estructurada ApiResponse que incluye 
+	 *         un mensaje y estado.
+	 * @throws ExceptionProjectNotFound si el proyecto con el ID especificado no existe.
+	 * @throws ExceptionInvalidStatusData si el estado actual del proyecto no es "Development".
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> toTestingProyect(int id) {
+		Optional<Project> optionalProject = projectRepository.findByProjectId(id);
+		
+		if(optionalProject.isPresent()) {
+			Project project = optionalProject.get();
+					
+			// Se valida que el estado inicial del proyecto sea "Development" (ID = 1)
+			if(project.getStatus().getStatus_id() == 1) {	
+				//Se crea un objeto Status
+				Status statusTesting = new Status();
+				//Se setea para obtener el id que almacena el valor de testing
+				statusTesting.setStatus_id(2);
+				//Se lo seteamos al project
+				project.setStatus(statusTesting);
+				//Se actualiza en la bbdd
+				projectRepository.save(project);
+				//Se almacena una respuesta estructurada de la clase ApiReponse.
+				ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project update to Testing correctly");
+				// Se devuelve una respuesta estructurada de la clase ApiResponse
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			}else {
+				throw new ExceptionInvalidStatusData("The initial status should be in development"); 
+			}			
+				
+		}else {
+			throw new ExceptionProjectNotFound("Project not found"); 
+		}
+	}
+
+
+	/**
+	 * Cambia el estado de un proyecto de "Testing" a "In Production", validando que 
+	 * el estado inicial sea "Testing" antes de realizar la actualización. 
+	 * Establece el ID del estado correspondiente en el proyecto y lo actualiza en la base de datos.
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta HTTP estructurada con ApiResponse que incluye 
+	 *         un mensaje y estado con respuesta estructurada.
+	 * @throws ExceptionProjectNotFound si el proyecto con el ID especificado no existe.
+	 * @throws ExceptionInvalidStatusData si el estado actual del proyecto no es "Testing".
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> toProductionProyect(int id) {
+		Optional<Project> optionalProject = projectRepository.findByProjectId(id);
+		
+		if(optionalProject.isPresent()) {
+			Project project = optionalProject.get();
+					
+			// Se valida que el estado inicial del proyecto sea "Testing" (ID = 2)
+			if(project.getStatus().getStatus_id() == 2) {	
+				//Se crea un objeto Status
+				Status statusTesting = new Status();
+				//Se setea para obtener el id que almacena el valor de "In Production"
+				statusTesting.setStatus_id(3);
+				//Se lo seteamos al project
+				project.setStatus(statusTesting);
+				//Se actualiza en la bbdd
+				projectRepository.save(project);
+				//Se almacena una respuesta estructurada de la clase ApiReponse.
+				ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project update to in Production correctly");
+				// Se devuelve una respuesta estructurada de la clase ApiResponse
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			}else {
+				throw new ExceptionInvalidStatusData("The initial status should be in Testing"); 
+			}			
+				
+		}else {
+			throw new ExceptionProjectNotFound("Project not found"); 
 		}
 	}
 

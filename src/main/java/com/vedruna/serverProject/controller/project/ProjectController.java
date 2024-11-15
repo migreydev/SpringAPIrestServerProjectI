@@ -127,6 +127,30 @@ public class ProjectController {
 		//Devuelve el proyecto encontrado al repositorio para proceder a su eliminación
 		return projectService.deleteProject(project);
 	}
+	
+	/**
+	 * Endpoint para actualizar el estado de un proyecto a "Testing".
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta estructurada del objeto ApiResponse que incluye 
+	 *         un mensaje y el estado.
+	 */
+	@PutMapping("/projects/totesting/{id}")
+	public ResponseEntity<ApiResponse<Project>> toTestingProyect(@PathVariable int id){ 
+		return projectService.toTestingProyect(id);
+	}
+	
+	/**
+	 * Endpoint para actualizar el estado de un proyecto a "In Production".
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta estructurada del objeto ApiResponse que incluye 
+	 *         un mensaje y el estado.
+	 */
+	@PutMapping("/projects/toprod/{id}")
+	public ResponseEntity<ApiResponse<Project>> toProductionProyect(@PathVariable int id){ 
+		return projectService.toProductionProyect(id);
+	}
 
 
 }
