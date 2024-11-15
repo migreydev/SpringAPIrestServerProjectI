@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vedruna.serverProject.dto.TechnologyUsedInProjectDTO;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Technology;
 import com.vedruna.serverProject.services.technology.TechnologyServiceI;
@@ -49,6 +50,17 @@ public class TechnologyController {
 	@DeleteMapping("/technologies/{id}")
 	public ResponseEntity<ApiResponse<Technology>> deleteTechnology(@PathVariable int id){
 		return technologyService.deleteTechnology(id);	
+	}
+	
+	/**
+	 * Endpoint para asociar una tecnología a un proyecto, indicando que la tecnología ha sido utilizada en el proyecto.
+	 *
+	 * @param technologyUsedInProjectDTO un objeto que contiene los IDs de la tecnología y del proyecto.
+	 * @return una respuesta HTTP de @link ApiResponse estructurada.
+	 */
+	@PostMapping("/technologies/used")
+	public ResponseEntity<ApiResponse<Technology>> technologyUsedInProject(@RequestBody TechnologyUsedInProjectDTO technologyUsedInProjectDTO){
+		return technologyService.technologyUsedInProject(technologyUsedInProjectDTO);
 	}
 
 }

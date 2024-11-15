@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vedruna.serverProject.dto.DeveloperWorkedDTO;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Developer;
 import com.vedruna.serverProject.services.developer.DeveloperServiceI;
@@ -50,4 +51,15 @@ public class DeveloperController {
 		return developerService.deleteDeveloper(id);
 	}
 
+	/**
+	 * Endpoint para asociar un desarrollador a un proyecto, indicando que ha trabajado en él.
+	 *
+	 * @param developerWorkedDTO un objeto que contiene los IDs del desarrollador y del proyecto.
+	 * @return una respuesta HTTP ApiResponse que incluye una respuesta estructurada.
+	 */
+	@PostMapping("/developers/worked")
+	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(@RequestBody DeveloperWorkedDTO developerWorkedDTO){
+		return developerService.developerHasWorkedOnaProject(developerWorkedDTO);
+	}
+	
 }
