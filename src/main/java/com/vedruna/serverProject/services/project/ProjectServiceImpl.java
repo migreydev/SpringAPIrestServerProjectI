@@ -13,19 +13,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.vedruna.serverProject.dto.ProjectDTO;
+import com.vedruna.serverProject.dto.TechnologyDTO;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidStatusData;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
+import com.vedruna.serverProject.exceptions.ExceptionTechnologyNotFound;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
 import com.vedruna.serverProject.persistance.model.Status;
+import com.vedruna.serverProject.persistance.model.Technology;
 import com.vedruna.serverProject.persistance.repository.project.ProjectRepository;
+import com.vedruna.serverProject.persistance.repository.technology.TechnologyRepository;
 
 @Service
 public class ProjectServiceImpl implements ProjectServiceI{
 	
 	@Autowired
 	private ProjectRepository projectRepository;
+	
+
+	@Autowired
+	private TechnologyRepository technologyRepository;
 
 	
 	/**
@@ -342,6 +350,56 @@ public class ProjectServiceImpl implements ProjectServiceI{
 			throw new ExceptionProjectNotFound("Project not found"); 
 		}
 	}
+
+	/**
+	 * Obtiene todos los proyectos asociados a una tecnología específica.
+	 * 
+	 * @param tech el nombre de la tecnología a buscar.
+	 * @return un ResponseEntity que contiene una lista de objetos ProjectDTO, 
+	 *         representando los proyectos asociados a la tecnología especificada.
+	 * @throws ExceptionTechnologyNotFound si la tecnología no se encuentra en la base de datos.
+	 */
+	@Override
+	public ResponseEntity<List<ProjectDTO>> getAllProjectsWithTechonolgy(String tech) {
+		//Buscamos la tecnología
+	    Optional<Technology> optionalTechnology = technologyRepository.findTechnologyByTechName(tech);
+	    //Si esta presente
+	    if(optionalTechnology.isPresent()) {
+	        Technology technology = optionalTechnology.get();//Se almacena como objetct Technology
+	        
+	        // Buscar los proyectos asociados a la tecnología
+	        List<Project> projects = projectRepository.findProjectByTechnologiesHasProjects(technology);
+	        
+	        // Crear la lista de PRojectDTOs
+	        List<ProjectDTO> projectDTOList = new ArrayList<>(); 
+	        
+	        for(Project project : projects) {
+	            // Crear el DTO para cada project
+	            ProjectDTO projectDTO = new ProjectDTO(project);
+	            
+	            // Agregar las tecnologías asociadas al proyecto y la convertimos a DTO
+	            List<TechnologyDTO> technologiesDTO = new ArrayList<>();
+	            //Iteramos sobre la lista de tecnologia que tienen proyectos
+	            for(Technology technologyProjects : project.getTechnologiesHasProjects()) { 
+	            	//Se crea el DTO para cada tecnología
+	                TechnologyDTO techologyDTO = new TechnologyDTO(technologyProjects);
+	                technologiesDTO.add(techologyDTO);
+	            }
+	            
+	            // Asocia las tecnologías al proyecto
+	            projectDTO.setTechnologiesHasProjectsDTO(technologiesDTO);
+	            
+	            // Añadir el DTO del proyecto a la lista
+	            projectDTOList.add(projectDTO);
+	        }
+
+	        // Devuelve la lista de proyectos como ResponseEntity
+	        return ResponseEntity.ok(projectDTOList);
+	    } else {
+	    	throw new ExceptionTechnologyNotFound("Technology not found"); 
+	    }
+	}
+
 
 
 }

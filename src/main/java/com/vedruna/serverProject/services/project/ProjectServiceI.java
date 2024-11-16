@@ -1,5 +1,7 @@
 package com.vedruna.serverProject.services.project;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import com.vedruna.serverProject.dto.ProjectDTO;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
+import com.vedruna.serverProject.persistance.model.Technology;
 
 public interface ProjectServiceI {
 	
@@ -33,4 +36,7 @@ public interface ProjectServiceI {
 	
 	//Método para pasar un proyecto de Testing a Production, devolviendo un ResponseEntity
 	ResponseEntity<ApiResponse<Project>>toProductionProyect(int id);
+	
+	//Método que devuelve una lista de proyectos por su tecnología
+	ResponseEntity<List<ProjectDTO>> getAllProjectsWithTechonolgy(String tech);
 }

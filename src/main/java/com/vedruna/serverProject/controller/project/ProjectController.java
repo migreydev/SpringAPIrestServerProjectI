@@ -1,5 +1,7 @@
 package com.vedruna.serverProject.controller.project;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -168,6 +170,20 @@ public class ProjectController {
     description = "Actualiza el estado del proyecto a 'In Production'.")
 	public ResponseEntity<ApiResponse<Project>> toProductionProyect(@PathVariable int id){ 
 		return projectService.toProductionProyect(id);
+	}
+	
+	/**
+	 * Endpoint para obtener todos los proyectos asociados a una tecnología específica.
+	 * 
+	 * @param tech el nombre de la tecnología a buscar extraído de la URL.
+	 * @return un ResponseEntity que contiene una lista de objetos ProjectDTO, 
+	 *         representando los proyectos asociados a la tecnología especificada.
+	 */
+	@GetMapping("/projects/tec/{tech}")
+	@Operation(summary = "Obtener proyectos por tecnología",
+    description = "Devuelve una lista de proyectos asociados a una tecnología específica, indicada por su nombre.")
+	public ResponseEntity<List<ProjectDTO>> getAllProjectsWithTechonolgy(@PathVariable String tech){
+		return projectService.getAllProjectsWithTechonolgy(tech);
 	}
 
 
