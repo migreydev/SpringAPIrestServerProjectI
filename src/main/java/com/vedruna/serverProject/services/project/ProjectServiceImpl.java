@@ -89,11 +89,34 @@ public class ProjectServiceImpl implements ProjectServiceI{
 	 */
 	@Override
 	public ResponseEntity<ApiResponse<Project>> addProject(Project project) {
+		
+		Optional <Project> existProject = projectRepository.findByProjectName(project.getProjectName());
+		
 		//Si el nombre del proyecto es nulo o vácio
 		if (project.getProjectName() == null || project.getProjectName().isEmpty()) {
 	       //Salta una excepcion indicando que el nombre del proyecto esta vacio.
 	        throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
 	    }
+		
+		// Si ya existe un proyecto con el mismo nombre
+	    if (existProject.isPresent()) {
+	        throw new ExceptionInvalidProjectData("Project name must be unique.");
+	    }
+		
+		 // Validación de las fechas
+	    if (project.getStart_date() == null || project.getEnd_date() == null) {
+	        throw new ExceptionInvalidProjectData("Start date and end date cannot be null.");
+	    }
+
+	    // Validar que start_date no sea posterior a end_date
+	    if (project.getStart_date().after(project.getEnd_date())) {
+	        throw new ExceptionInvalidProjectData("Start date cannot be after end date.");
+	    }
+	    
+	    if(project.getStatus().getStatus_id() == 0) {
+	    	 throw new ExceptionInvalidProjectData("Project status cannot be null.");
+	    }
+	    
 		try {
 			//Guarda el proyecto en el repositorio.
 			projectRepository.save(project);

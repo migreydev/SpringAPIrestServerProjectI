@@ -15,9 +15,13 @@ import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Developer;
 import com.vedruna.serverProject.services.developer.DeveloperServiceI;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin
+@Tag(name = "Developers", description = "Endpoints relacionados con los desarrolladores")
 public class DeveloperController {
 	
 	@Autowired
@@ -31,6 +35,8 @@ public class DeveloperController {
 	 * @return ResponseEntity con una respuesta estructurada
 	 */
 	@PostMapping("/developers")
+	@Operation(summary = "Crear un nuevo developer", 
+    description = "Este endpoint permite crear un nuevo developer y guardarlo en la base de datos.")
 	public ResponseEntity<ApiResponse<Developer>> addDeveloper(@RequestBody Developer developer){
 		return developerService.addDeveloper(developer);
 	}
@@ -47,6 +53,8 @@ public class DeveloperController {
 	 * @return Un objeto `ResponseEntity` que contiene una respuesta estructurada
 	 */
 	@DeleteMapping("/developers/{id}")
+	@Operation(summary = "Eliminar un developer", 
+    description = "Elimina un developer de la base de datos por su ID.")
 	public ResponseEntity<ApiResponse<Developer>> deleteDeveloper(@PathVariable int id){
 		return developerService.deleteDeveloper(id);
 	}
@@ -58,6 +66,7 @@ public class DeveloperController {
 	 * @return una respuesta HTTP ApiResponse que incluye una respuesta estructurada.
 	 */
 	@PostMapping("/developers/worked")
+	@Operation(summary = "Asociar un desarrollador a un proyecto", description = "Permite asociar un desarrollador existente con un proyecto.")
 	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(@RequestBody DeveloperWorkedDTO developerWorkedDTO){
 		return developerService.developerHasWorkedOnaProject(developerWorkedDTO);
 	}
