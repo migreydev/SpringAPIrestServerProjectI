@@ -27,6 +27,7 @@ import com.vedruna.serverProject.services.project.ProjectServiceI;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -101,7 +102,7 @@ public class ProjectController {
 	@PostMapping("/projects")
 	@Operation(summary = "Crear un nuevo proyecto", 
     description = "Crea un nuevo proyecto en la base de datos.")
-	public ResponseEntity<ApiResponse<Project>> addProject(@RequestBody Project project){
+	public ResponseEntity<ApiResponse<Project>> addProject(@Valid @RequestBody Project project){
 		return projectService.addProject(project);
 	}
 	

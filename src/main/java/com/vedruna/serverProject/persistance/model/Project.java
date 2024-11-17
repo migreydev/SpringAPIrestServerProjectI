@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vedruna.serverProject.validation.Url;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,12 +42,15 @@ public class Project {
 	private Date end_date;
 	
 	@Column(name="repository_url")
+	@Url(message = "La URL del repositorio no es válida.") 
 	private String repository_url;
 	
 	@Column(name="demo_url")
+	@Url(message = "La URL de la demo no es válida.")
 	private String demo_url;
 	
 	@Column(name="picture")
+	@Url(message = "La URL de la picture no es válida.")
 	private String picture;
 	
 	@ManyToOne

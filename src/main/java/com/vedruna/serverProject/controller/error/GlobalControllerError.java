@@ -1,7 +1,12 @@
 package com.vedruna.serverProject.controller.error;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -99,5 +104,19 @@ public class GlobalControllerError {
 			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
+	
+	//Maneja la excepción cuando la url o del repositorio, picture o demo no es válida
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException ex) {
+	    List<String> errors = new ArrayList<>();
+	    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+	        errors.add(error.getDefaultMessage());
+	    }
+	    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errors.toString());
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+
+
+	
 
 }
