@@ -7,19 +7,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.vedruna.serverProject.dto.DeveloperWorkedDTO;
 import com.vedruna.serverProject.exceptions.ExceptionDeveloperNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
+import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Developer;
+import com.vedruna.serverProject.persistance.model.Project;
 import com.vedruna.serverProject.persistance.repository.developer.DeveloperRepository;
+import com.vedruna.serverProject.persistance.repository.project.ProjectRepository;
 
 @Service
 public class DeveloperServiceImpl implements DeveloperServiceI{
 	
 	@Autowired
 	private DeveloperRepository developerRepository;
+	
+	@Autowired
+	private ProjectRepository projectRepository;
 
 	/**
 	 * Crea un nuevo developer.
@@ -98,16 +105,62 @@ public class DeveloperServiceImpl implements DeveloperServiceI{
 	 */
 	@Override
 	public ResponseEntity<ApiResponse<Developer>> deleteDeveloper(int id) {
-		Optional<Developer> optionalDeveloper = developerRepository.findById(id);
+		Optional<Developer> optionalDeveloper = developerRepository.findById(id); //Se obtiene el developer por su id y se almacena como optional
 		
+		//Si existe
 		if(optionalDeveloper.isPresent()) {
-			Developer developer = optionalDeveloper.get();
-			developerRepository.delete(developer);
+			Developer developer = optionalDeveloper.get(); //Se alamcena como un object Developer
+			developerRepository.delete(developer);//Se elimina de la bbdd
+			//Se crea y devuelve una respuesta estructurada
 			ApiResponse<Developer> response = new ApiResponse<>(HttpStatus.OK, "Developer delete correctly");
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}else {
 			throw new ExceptionDeveloperNotFound("Developer not found");
 		}
+	}
+
+	/**
+	 * Asocia un desarrollador a un proyecto específico, indicando que el desarrollador 
+	 * ha trabajado en dicho proyecto. 
+	 *
+	 * @param developerWorkedDTO un DTO que contiene los IDs del desarrollador y del proyecto.
+	 * @return una respuesta HTTP ApiResponse que devuelve una respuesta estructurada.
+	 * @throws ExceptionDeveloperNotFound si el desarrollador con el ID proporcionado no existe.
+	 * @throws ExceptionProjectNotFound si el proyecto con el ID proporcionado no existe.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(DeveloperWorkedDTO developerWorkedDTO) {
+		
+		//Busca el developer por el id y se alamcena como Optional
+		Optional<Developer> optionalDeveloper = developerRepository.findById(developerWorkedDTO.getDeveloperId());
+		
+		//Si no existe salta una excepción
+		if (!optionalDeveloper.isPresent()) {
+	        throw new ExceptionDeveloperNotFound("Developer not found");
+	    }
+		
+		//Busca el project por el id y se almacena como Optional
+		Optional<Project> optionalProject = projectRepository.findById(developerWorkedDTO.getProjectId());
+		
+		//Si no esta presenta salta excepción
+		if (!optionalProject.isPresent()) {
+	        throw new ExceptionProjectNotFound("Project not found");
+	    }
+		
+		//Se obtiene del optional el developer
+		Developer developer = optionalDeveloper.get();
+		//Se obtiene del optional el project;
+	    Project project = optionalProject.get();
+	    
+	    // Asociar el proyecto al developer
+	    developer.getProjectsHasDevelopers().add(project);
+	    
+	    //Guardar los cambios
+	    developerRepository.save(developer);
+		
+	    // Crear y devolver una respuesta estructurada
+	    ApiResponse<Developer> response = new ApiResponse<>(HttpStatus.OK, "Developer associated with project successfully");
+	    return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 }

@@ -7,10 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.vedruna.serverProject.dto.TechnologyUsedInProjectDTO;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidTechnologyData;
+import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionTechnologyNotFound;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
+import com.vedruna.serverProject.persistance.model.Project;
 import com.vedruna.serverProject.persistance.model.Technology;
+import com.vedruna.serverProject.persistance.repository.project.ProjectRepository;
 import com.vedruna.serverProject.persistance.repository.technology.TechnologyRepository;
 
 @Service
@@ -18,6 +22,9 @@ public class TechnologyServiceImpl implements TechnologyServiceI{
 
 	@Autowired
 	private TechnologyRepository technologyRepository;
+	
+	@Autowired
+	private ProjectRepository projectRepository;
 
 	/**
 	 * Añade una nueva Technology.
@@ -96,5 +103,46 @@ public class TechnologyServiceImpl implements TechnologyServiceI{
 		}else {
 			throw new ExceptionTechnologyNotFound("Technology not found");
 		}
+	}
+
+	/**
+	 * Asocia una tecnología a un proyecto, indicando que la tecnología ha sido utilizada en el proyecto.
+	 *
+	 * @param technologyUsedInProjectDTO un objeto que contiene los IDs de la tecnología y del proyecto.
+	 * @return una respuesta ApiResponse que incluye un respuesta estructurada
+	 * @throws ExceptionTechnologyNotFound si la tecnología con el ID especificado no existe.
+	 * @throws ExceptionProjectNotFound si el proyecto con el ID especificado no existe.
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Technology>> technologyUsedInProject(
+			TechnologyUsedInProjectDTO technologyUsedInProjectDTO) {
+		//Se obtiene el technology como un optional 
+		Optional<Technology> optionalTechnology = technologyRepository.findById(technologyUsedInProjectDTO.getTechnologyId());
+		
+		 // Si no existe, lanza una excepción
+		if(!optionalTechnology.isPresent()) {
+			throw new ExceptionTechnologyNotFound("Technology not found");
+		}
+		
+		//Se obtiene un project como optional
+		Optional<Project> optionalProject = projectRepository.findById(technologyUsedInProjectDTO.getProjectId());
+		
+		 // Si no existe, lanza una excepción
+		if(!optionalProject.isPresent()) {
+			throw new ExceptionProjectNotFound("Project not found");
+		}
+		
+		// Se obtiene la tecnología y el proyecto
+		Technology technology = optionalTechnology.get();
+		Project project = optionalProject.get();
+		// Se asocia el proyecto a la tecnología
+		technology.getProjectsHasTechnologies().add(project);
+		// Se actualiza la tecnología
+		technologyRepository.save(technology);
+		
+		//crea una respuesta estructurada y se devuelve
+		ApiResponse<Technology>response = new ApiResponse<>(HttpStatus.OK, "Developer associated with project successfully");
+	    return ResponseEntity.status(HttpStatus.OK).body(response);
+
 	}
 }

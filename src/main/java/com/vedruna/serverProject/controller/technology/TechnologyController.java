@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vedruna.serverProject.dto.TechnologyUsedInProjectDTO;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Technology;
 import com.vedruna.serverProject.services.technology.TechnologyServiceI;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin
+@Tag(name = "Technologies", description = "Endpoints relacionados con las tecnologías")
 public class TechnologyController {
 	
 	@Autowired
@@ -33,6 +38,8 @@ public class TechnologyController {
 	 *         la tecnología fue guardada correctamente.
 	 */
 	@PostMapping("/technologies")
+	@Operation(summary = "Agregar nueva tecnología", 
+    description = "Crea una nueva tecnología en la base de datos.")
 	public ResponseEntity<ApiResponse<Technology>> addTechnology(@RequestBody Technology technology){
 		return technologyService.addTechnology(technology);
 	}
@@ -47,8 +54,23 @@ public class TechnologyController {
 	 * @return Una ResponseEntity con una respuesta estructurada con el estado 200 OK y un mensaje de éxito.
 	 */
 	@DeleteMapping("/technologies/{id}")
+	@Operation(summary = "Eliminar tecnología", 
+    description = "Elimina una tecnología específica utilizando su ID.")
 	public ResponseEntity<ApiResponse<Technology>> deleteTechnology(@PathVariable int id){
 		return technologyService.deleteTechnology(id);	
+	}
+	
+	/**
+	 * Endpoint para asociar una tecnología a un proyecto, indicando que la tecnología ha sido utilizada en el proyecto.
+	 *
+	 * @param technologyUsedInProjectDTO un objeto que contiene los IDs de la tecnología y del proyecto.
+	 * @return una respuesta HTTP de @link ApiResponse estructurada.
+	 */
+	@PostMapping("/technologies/used")
+	@Operation(summary = "Asociar tecnología a proyecto", 
+    description = "Vincula una tecnología existente con un proyecto específico.")
+	public ResponseEntity<ApiResponse<Technology>> technologyUsedInProject(@RequestBody TechnologyUsedInProjectDTO technologyUsedInProjectDTO){
+		return technologyService.technologyUsedInProject(technologyUsedInProjectDTO);
 	}
 
 }

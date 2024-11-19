@@ -1,0 +1,960 @@
+{
+	"info": {
+		"_postman_id": "7dba6941-6c8d-45ad-a422-55bed995048f",
+		"name": "Trabajo Final 1 Evaluacion - Entorno Servidor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32815938"
+	},
+	"item": [
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "Get All Projects",
+					"item": [
+						{
+							"name": "Get All Projects - 200 OK",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects?page=0&size=5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Projects - 400 Bad Request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects?page=0&size=-5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "-5"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Project By Name",
+					"item": [
+						{
+							"name": "Get Project By Name - 200 OK",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/word",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"word"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Project By Name - 400 Bad Request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/wordd",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"wordd"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add Project",
+					"item": [
+						{
+							"name": "Add Project - 200 OK",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Project Spring\",\n  \"description\": \"A detailed description of the project.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Request - 400 Bad Request Name Unique",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Project Spring\",\n  \"description\": \"A detailed.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Request - 400 Bad Request Name Null",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"\",\n  \"description\": \"A detailed.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Request - 400 Bad Request Date",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Project\",\n  \"description\": \"A detailed project\",\n  \"start_date\": \"2025-01-01\",  \n  \"end_date\": \"2024-12-31\", \n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Request - 400 Bad Request Status Null",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Project java\",\n  \"description\": \"A detailed.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Request - 400 Bad Request URL Repository Error",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Project 34D5\",\n  \"description\": \"A detailed.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"githubcom/example/project\", \n  \"demo_url\": \"githubcom/example/project\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Edit Project",
+					"item": [
+						{
+							"name": "Edit Project - 200 OK",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Editando\",\n  \"description\": \"Project editado.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Project - Bad Request",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"\",\n  \"description\": \"A detailed description of the project.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit project Name Unique - Bad Request",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"projectName\": \"Editando1\",\n  \"description\": \"Project editado.\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"repository_url\": \"https://github.com/example/project\",\n  \"demo_url\": \"https://example.com/demo\",\n  \"picture\": \"https://example.com/images/project.png\",\n  \"status\": {\n    \"status_id\": 1\n  }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Project",
+					"item": [
+						{
+							"name": "Delete Project - 204 OK",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Project - Bad Request",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/2434343",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"2434343"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Developer",
+			"item": [
+				{
+					"name": "Add Developer",
+					"item": [
+						{
+							"name": "Add Developer - 200 OK",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"devName\": \"Miguel Angel\",\n    \"devSurname\": \"Reyes\",\n    \"email\": \"miguel.reyes@example.com\",\n    \"linkedinUrl\": \"https://www.linkedin.com/in/miguelangelreyes\",\n    \"githubUrl\": \"https://github.com/miguelangelreyes\",\n    \"projectsHasDevelopers\": [\n        {\n            \"projectId\": 1\n        }\n    ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/developers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"developers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Developer - Bada Request 409 Conflict Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"devName\": \"Miguel Angel\",\n    \"devSurname\": \"Reyes\",\n    \"email\": \"miguel.reyes@example.com\",\n    \"linkedinUrl\": \"https://www.linkedin.com/in/reyes\",\n    \"githubUrl\": \"https://github.com/reyes\",\n    \"projectsHasDevelopers\": [\n        {\n            \"projectId\": 1\n        }\n    ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/developers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"developers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Developer - Bada Request 409 Conflict Linkedin",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"devName\": \"Miguel Angel\",\n    \"devSurname\": \"Reyes\",\n    \"email\": \"miguel.s@example.com\",\n    \"linkedinUrl\": \"https://www.linkedin.com/in/miguelangelreyes\",\n    \"githubUrl\": \"https://github.com/reyes\",\n    \"projectsHasDevelopers\": [\n        {\n            \"projectId\": 1\n        }\n    ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/developers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"developers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Developer - Bada Request 409 Conflict GitHub",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"devName\": \"Miguel Angel\",\n    \"devSurname\": \"Reyes\",\n    \"email\": \"miguel.ss@example.com\",\n    \"linkedinUrl\": \"https://www.linkedin.com/in/miguelangelreyesss\",\n    \"githubUrl\": \"https://github.com/reyes\",\n    \"projectsHasDevelopers\": [\n        {\n            \"projectId\": 1\n        }\n    ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/developers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"developers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Developer",
+					"item": [
+						{
+							"name": "Delete Developer - 200 OK",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/developers/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"developers",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Developer - Bad Request",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/developers/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"developers",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Technology",
+			"item": [
+				{
+					"name": "Add Technology",
+					"item": [
+						{
+							"name": "Add Technology - 200 OK",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"techId\": 1,\n  \"techName\": \"Java\",\n  \"projectsHasTechnologies\": [\n    {\n      \"projectId\": 1\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/technologies",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"technologies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Techonology - Bad Request Name Unique",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"techId\": 2,\n  \"techName\": \"Java\",\n  \"projectsHasTechnologies\": [\n    {\n      \"projectId\": 1\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/technologies",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"technologies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Technology",
+					"item": [
+						{
+							"name": "Delete Technology - 200 OK",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/technologies/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"technologies",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Technology - Bad Request",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/technologies/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"technologies",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Extension",
+			"item": [
+				{
+					"name": "Status To Testing - 200 OK",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/projects/totesting/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"totesting",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status To Testing - Bad Request",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/projects/totesting/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"totesting",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status In Testing to Production - 200 OK",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/projects/toprod/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"toprod",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status In Testing to Production - Bad Request",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/projects/toprod/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"toprod",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Developer Has Worked On a Project - 200 OK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"developerId\": 1,\n  \"projectId\": 8\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/developers/worked",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"developers",
+								"worked"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Developer Has Worked On a Project - Bad Request",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Technology Used In a Project - 200 OK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"technologyId\": 1,\n    \"projectId\": 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/technologies/used",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"technologies",
+								"used"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Projects With Techonolgy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/projects/tec/Java",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"tec",
+								"Java"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

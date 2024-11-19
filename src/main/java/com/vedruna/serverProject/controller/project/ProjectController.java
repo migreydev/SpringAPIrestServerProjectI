@@ -1,5 +1,7 @@
 package com.vedruna.serverProject.controller.project;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +25,14 @@ import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
 import com.vedruna.serverProject.services.project.ProjectServiceI;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin
+@Tag(name = "Projects", description = "Endpoints relacionados con la gestión de proyectos")
 public class ProjectController {
 	
 	@Autowired
@@ -41,6 +48,8 @@ public class ProjectController {
      * @throws ExceptionErrorPage Si el número de página o tamaño de página no es válido.
      */
 	@GetMapping("/projects")
+	@Operation(summary = "Obtener todos los proyectos (paginados)", 
+    description = "Devuelve una lista paginada de todos los proyectos en formato DTO.")
     public ResponseEntity<Page<ProjectDTO>> getAllProjects(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
@@ -78,6 +87,8 @@ public class ProjectController {
 	 *         Si el proyecto no se encuentra, devuelve una excepción.
 	 */
 	@GetMapping("/projects/{word}")
+	@Operation(summary = "Obtener proyecto por nombre", 
+    description = "Busca un proyecto por su nombre exacto.")
 	public ResponseEntity<ProjectDTO> getProjectByNameWord(@PathVariable String word) {
 		return projectService.getProjectByName(word);
 	}
@@ -89,7 +100,9 @@ public class ProjectController {
 	 * @return Una respuesta estructurada.
 	 */
 	@PostMapping("/projects")
-	public ResponseEntity<ApiResponse<Project>> addProject(@RequestBody Project project){
+	@Operation(summary = "Crear un nuevo proyecto", 
+    description = "Crea un nuevo proyecto en la base de datos.")
+	public ResponseEntity<ApiResponse<Project>> addProject(@Valid @RequestBody Project project){
 		return projectService.addProject(project);
 	}
 	
@@ -104,6 +117,8 @@ public class ProjectController {
 	 * @return Una respuesta estructurada.
 	 */
 	@PutMapping("/projects/{id}")
+	@Operation(summary = "Actualizar un proyecto", 
+    description = "Actualiza un proyecto existente con los datos proporcionados.")
 	public ResponseEntity<ApiResponse<Project>> updateProject(@PathVariable int id, @RequestBody Project updateProject) {	
 		return projectService.editProject(id, updateProject);
 	}
@@ -121,11 +136,55 @@ public class ProjectController {
 	 * En caso de eliminación, devuelve una respuesta indicando que el proyecto fué eliminado.
 	 */
 	@DeleteMapping("/projects/{id}")
+	@Operation(summary = "Eliminar un proyecto", 
+     description = "Elimina un proyecto de la base de datos utilizando su ID.")
 	public ResponseEntity<ApiResponse<Project>> deleteProyect(@PathVariable int id){
 		//Busca el proyecto por su ID
 		Project project = projectService.findProjectById(id);
 		//Devuelve el proyecto encontrado al repositorio para proceder a su eliminación
 		return projectService.deleteProject(project);
+	}
+	
+	/**
+	 * Endpoint para actualizar el estado de un proyecto a "Testing".
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta estructurada del objeto ApiResponse que incluye 
+	 *         un mensaje y el estado.
+	 */
+	@PutMapping("/projects/totesting/{id}")
+	@Operation(summary = "Cambiar estado del proyecto a 'Testing'", 
+    description = "Actualiza el estado del proyecto a 'Testing'.")
+	public ResponseEntity<ApiResponse<Project>> toTestingProyect(@PathVariable int id){ 
+		return projectService.toTestingProyect(id);
+	}
+	
+	/**
+	 * Endpoint para actualizar el estado de un proyecto a "In Production".
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta estructurada del objeto ApiResponse que incluye 
+	 *         un mensaje y el estado.
+	 */
+	@PutMapping("/projects/toprod/{id}")
+	@Operation(summary = "Cambiar estado del proyecto a 'In Production'", 
+    description = "Actualiza el estado del proyecto a 'In Production'.")
+	public ResponseEntity<ApiResponse<Project>> toProductionProyect(@PathVariable int id){ 
+		return projectService.toProductionProyect(id);
+	}
+	
+	/**
+	 * Endpoint para obtener todos los proyectos asociados a una tecnología específica.
+	 * 
+	 * @param tech el nombre de la tecnología a buscar extraído de la URL.
+	 * @return un ResponseEntity que contiene una lista de objetos ProjectDTO, 
+	 *         representando los proyectos asociados a la tecnología especificada.
+	 */
+	@GetMapping("/projects/tec/{tech}")
+	@Operation(summary = "Obtener proyectos por tecnología",
+    description = "Devuelve una lista de proyectos asociados a una tecnología específica, indicada por su nombre.")
+	public ResponseEntity<List<ProjectDTO>> getAllProjectsWithTechonolgy(@PathVariable String tech){
+		return projectService.getAllProjectsWithTechonolgy(tech);
 	}
 
 

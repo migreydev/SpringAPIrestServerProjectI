@@ -1,7 +1,12 @@
 package com.vedruna.serverProject.controller.error;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,6 +16,7 @@ import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperEmail;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperGithub;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidDeveloperLinkedin;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidStatusData;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidTechnologyData;
 import com.vedruna.serverProject.exceptions.ExceptionPageNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
@@ -91,5 +97,26 @@ public class GlobalControllerError {
 		    ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
 		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
+	
+	// Maneja la excepción cuando el status no es valido
+	@ExceptionHandler(ExceptionInvalidStatusData.class)
+	public ResponseEntity<ApiError> handleInvalidStatusData(ExceptionInvalidStatusData e) {
+			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+	
+	//Maneja la excepción cuando la url o del repositorio, picture o demo no es válida
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException ex) {
+	    List<String> errors = new ArrayList<>();
+	    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+	        errors.add(error.getDefaultMessage());
+	    }
+	    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errors.toString());
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+
+
+	
 
 }

@@ -13,17 +13,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.vedruna.serverProject.dto.ProjectDTO;
+import com.vedruna.serverProject.dto.TechnologyDTO;
 import com.vedruna.serverProject.exceptions.ExceptionInvalidProjectData;
+import com.vedruna.serverProject.exceptions.ExceptionInvalidStatusData;
 import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
+import com.vedruna.serverProject.exceptions.ExceptionTechnologyNotFound;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
+import com.vedruna.serverProject.persistance.model.Status;
+import com.vedruna.serverProject.persistance.model.Technology;
 import com.vedruna.serverProject.persistance.repository.project.ProjectRepository;
+import com.vedruna.serverProject.persistance.repository.technology.TechnologyRepository;
 
 @Service
 public class ProjectServiceImpl implements ProjectServiceI{
 	
 	@Autowired
 	private ProjectRepository projectRepository;
+	
+
+	@Autowired
+	private TechnologyRepository technologyRepository;
 
 	
 	/**
@@ -87,11 +97,34 @@ public class ProjectServiceImpl implements ProjectServiceI{
 	 */
 	@Override
 	public ResponseEntity<ApiResponse<Project>> addProject(Project project) {
+		
+		Optional <Project> existProject = projectRepository.findByProjectName(project.getProjectName());
+		
 		//Si el nombre del proyecto es nulo o vácio
 		if (project.getProjectName() == null || project.getProjectName().isEmpty()) {
 	       //Salta una excepcion indicando que el nombre del proyecto esta vacio.
 	        throw new ExceptionInvalidProjectData("Project name cannot be null or empty.");
 	    }
+		
+		// Si ya existe un proyecto con el mismo nombre
+	    if (existProject.isPresent()) {
+	        throw new ExceptionInvalidProjectData("Project name must be unique.");
+	    }
+		
+		 // Validación de las fechas
+	    if (project.getStart_date() == null || project.getEnd_date() == null) {
+	        throw new ExceptionInvalidProjectData("Start date and end date cannot be null.");
+	    }
+
+	    // Validar que start_date no sea posterior a end_date
+	    if (project.getStart_date().after(project.getEnd_date())) {
+	        throw new ExceptionInvalidProjectData("Start date cannot be after end date.");
+	    }
+	    
+	    if(project.getStatus().getStatus_id() == 0) {
+	    	 throw new ExceptionInvalidProjectData("Project status cannot be null.");
+	    }
+	    
 		try {
 			//Guarda el proyecto en el repositorio.
 			projectRepository.save(project);
@@ -233,6 +266,140 @@ public class ProjectServiceImpl implements ProjectServiceI{
 			throw new ExceptionProjectNotFound("Project not found"); //Si el proyecto no es encontrado salta una excepción
 		}
 	}
+
+
+	/**
+	 * Cambia el estado de un proyecto de "Development" a "Testing", validando que 
+	 * el estado inicial sea "Development" antes de realizar la actualización. 
+	 * Establece el ID del estado correspondiente en el proyecto y lo actualiza en la base de datos.
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta HTTP estructurada ApiResponse que incluye 
+	 *         un mensaje y estado.
+	 * @throws ExceptionProjectNotFound si el proyecto con el ID especificado no existe.
+	 * @throws ExceptionInvalidStatusData si el estado actual del proyecto no es "Development".
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> toTestingProyect(int id) {
+		Optional<Project> optionalProject = projectRepository.findByProjectId(id);
+		
+		if(optionalProject.isPresent()) {
+			Project project = optionalProject.get();
+					
+			// Se valida que el estado inicial del proyecto sea "Development" (ID = 1)
+			if(project.getStatus().getStatus_id() == 1) {	
+				//Se crea un objeto Status
+				Status statusTesting = new Status();
+				//Se setea para obtener el id que almacena el valor de testing
+				statusTesting.setStatus_id(2);
+				//Se lo seteamos al project
+				project.setStatus(statusTesting);
+				//Se actualiza en la bbdd
+				projectRepository.save(project);
+				//Se almacena una respuesta estructurada de la clase ApiReponse.
+				ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project update to Testing correctly");
+				// Se devuelve una respuesta estructurada de la clase ApiResponse
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			}else {
+				throw new ExceptionInvalidStatusData("The initial status should be in development"); 
+			}			
+				
+		}else {
+			throw new ExceptionProjectNotFound("Project not found"); 
+		}
+	}
+
+
+	/**
+	 * Cambia el estado de un proyecto de "Testing" a "In Production", validando que 
+	 * el estado inicial sea "Testing" antes de realizar la actualización. 
+	 * Establece el ID del estado correspondiente en el proyecto y lo actualiza en la base de datos.
+	 *
+	 * @param id el ID del proyecto que se desea actualizar.
+	 * @return una respuesta HTTP estructurada con ApiResponse que incluye 
+	 *         un mensaje y estado con respuesta estructurada.
+	 * @throws ExceptionProjectNotFound si el proyecto con el ID especificado no existe.
+	 * @throws ExceptionInvalidStatusData si el estado actual del proyecto no es "Testing".
+	 */
+	@Override
+	public ResponseEntity<ApiResponse<Project>> toProductionProyect(int id) {
+		Optional<Project> optionalProject = projectRepository.findByProjectId(id);
+		
+		if(optionalProject.isPresent()) {
+			Project project = optionalProject.get();
+					
+			// Se valida que el estado inicial del proyecto sea "Testing" (ID = 2)
+			if(project.getStatus().getStatus_id() == 2) {	
+				//Se crea un objeto Status
+				Status statusTesting = new Status();
+				//Se setea para obtener el id que almacena el valor de "In Production"
+				statusTesting.setStatus_id(3);
+				//Se lo seteamos al project
+				project.setStatus(statusTesting);
+				//Se actualiza en la bbdd
+				projectRepository.save(project);
+				//Se almacena una respuesta estructurada de la clase ApiReponse.
+				ApiResponse<Project> response = new ApiResponse<>(HttpStatus.OK, "Project update to in Production correctly");
+				// Se devuelve una respuesta estructurada de la clase ApiResponse
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			}else {
+				throw new ExceptionInvalidStatusData("The initial status should be in Testing"); 
+			}			
+				
+		}else {
+			throw new ExceptionProjectNotFound("Project not found"); 
+		}
+	}
+
+	/**
+	 * Obtiene todos los proyectos asociados a una tecnología específica.
+	 * 
+	 * @param tech el nombre de la tecnología a buscar.
+	 * @return un ResponseEntity que contiene una lista de objetos ProjectDTO, 
+	 *         representando los proyectos asociados a la tecnología especificada.
+	 * @throws ExceptionTechnologyNotFound si la tecnología no se encuentra en la base de datos.
+	 */
+	@Override
+	public ResponseEntity<List<ProjectDTO>> getAllProjectsWithTechonolgy(String tech) {
+		//Buscamos la tecnología
+	    Optional<Technology> optionalTechnology = technologyRepository.findTechnologyByTechName(tech);
+	    //Si esta presente
+	    if(optionalTechnology.isPresent()) {
+	        Technology technology = optionalTechnology.get();//Se almacena como objetct Technology
+	        
+	        // Buscar los proyectos asociados a la tecnología
+	        List<Project> projects = projectRepository.findProjectByTechnologiesHasProjects(technology);
+	        
+	        // Crear la lista de PRojectDTOs
+	        List<ProjectDTO> projectDTOList = new ArrayList<>(); 
+	        
+	        for(Project project : projects) {
+	            // Crear el DTO para cada project
+	            ProjectDTO projectDTO = new ProjectDTO(project);
+	            
+	            // Agregar las tecnologías asociadas al proyecto y la convertimos a DTO
+	            List<TechnologyDTO> technologiesDTO = new ArrayList<>();
+	            //Iteramos sobre la lista de tecnologia que tienen proyectos
+	            for(Technology technologyProjects : project.getTechnologiesHasProjects()) { 
+	            	//Se crea el DTO para cada tecnología
+	                TechnologyDTO techologyDTO = new TechnologyDTO(technologyProjects);
+	                technologiesDTO.add(techologyDTO);
+	            }
+	            
+	            // Asocia las tecnologías al proyecto
+	            projectDTO.setTechnologiesHasProjectsDTO(technologiesDTO);
+	            
+	            // Añadir el DTO del proyecto a la lista
+	            projectDTOList.add(projectDTO);
+	        }
+
+	        // Devuelve la lista de proyectos como ResponseEntity
+	        return ResponseEntity.ok(projectDTOList);
+	    } else {
+	    	throw new ExceptionTechnologyNotFound("Technology not found"); 
+	    }
+	}
+
 
 
 }

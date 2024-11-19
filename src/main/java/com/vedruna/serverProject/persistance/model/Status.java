@@ -31,4 +31,4 @@ public class Status {
 	@OneToMany(mappedBy = "status")
 	private List<Project>projects = new ArrayList<>();
 
-}
+} 
