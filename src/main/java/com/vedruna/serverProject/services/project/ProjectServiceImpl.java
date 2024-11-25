@@ -60,27 +60,32 @@ public class ProjectServiceImpl implements ProjectServiceI{
 
 
 	/**
-	 * Obtiene un proyecto por su nombre. Si el proyecto se encuentra en la base de datos, devuelve un 
-	 * objeto `ProjectDTO`. Si no se encuentra el proyecto, lanza una excepción.
-	 * 
-	 * @param name El nombre del proyecto que se desea buscar.
-	 * @return Un `ResponseEntity` que contiene el `ProjectDTO` si el proyecto existe.
-	 * @throws ExceptionProjectNotFound Si el proyecto con el nombre especificado no se encuentra en la base de datos.
+	 * Recupera una lista paginada de proyectos que coinciden con el nombre proporcionado.  
+	 * Si no se encuentran proyectos, lanza una excepción personalizada.  
+	 *
+	 * @param name el nombre de los proyectos a buscar
+	 * @param pageable información de la paginación
+	 * @return un Page de objetos ProjectDTO que coinciden con el nombre de búsqueda
+	 * @throws ExceptionProjectNotFound si no se encuentran proyectos con el nombre especificado
 	 */
 	@Override
-	public ResponseEntity<ProjectDTO> getProjectByName(String name) {
-		Optional<Project> projectOptional = projectRepository.findByProjectName(name); //Obtiene el project filtrado por su nombre
+	public Page<ProjectDTO> getProjectByName(String name, Pageable pageable) {
+		// Llama al repositorio para buscar proyectos que contengan el nombre especificado
+		 Page<Project> projectsPage = projectRepository.findByProjectNameContaining(name, pageable);
+		 
+		// Verifica si la página de proyectos está vacía
+		if (projectsPage.isEmpty()) {
+			throw new ExceptionProjectNotFound("Page not found with name: " + name);
+		}
+		// Convierte cada Project en un ProjectDTO
+		List<ProjectDTO> projectsDTO = new ArrayList<>();
+		for(Project projectsBydName : projectsPage) {
+			ProjectDTO projectDTOname = new ProjectDTO(projectsBydName);
+			projectsDTO.add(projectDTOname);
+		}
 		
-		if (projectOptional.isPresent()) {
-			Project project = projectOptional.get(); //Obtiene el project como Project
-			ProjectDTO projectDTO = new ProjectDTO(project); //Parsea el Project a ProjectDTO
-			return ResponseEntity.ok(projectDTO); //Devuelve el dto en la respuesta
-		 } else {
-			// Si no se encuentra el proyecto, lanzamos la excepción
-		        throw new ExceptionProjectNotFound("Project not found with name: " + name);  // Lanzamos la excepción
-		    }
-		
-		
+		// Devolver la página con ProjectDTOs
+        return new PageImpl<>(projectsDTO, pageable, projectsPage.getTotalElements());	
 	}
 
 	/**

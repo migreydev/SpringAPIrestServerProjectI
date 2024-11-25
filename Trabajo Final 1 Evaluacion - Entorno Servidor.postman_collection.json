@@ -102,6 +102,28 @@
 							"response": []
 						},
 						{
+							"name": "Get Project By Contain Name Page - 200 OK",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/projects/Project",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"projects",
+										"Project"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Get Project By Name - 400 Bad Request",
 							"request": {
 								"method": "GET",
@@ -763,7 +785,7 @@
 				{
 					"name": "Status To Testing - 200 OK",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -795,8 +817,17 @@
 				{
 					"name": "Status To Testing - Bad Request",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/v1/projects/totesting/8",
 							"protocol": "http",
@@ -818,7 +849,7 @@
 				{
 					"name": "Status In Testing to Production - 200 OK",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/api/v1/projects/toprod/8",
@@ -841,7 +872,7 @@
 				{
 					"name": "Status In Testing to Production - Bad Request",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/api/v1/projects/toprod/8",

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -70,27 +71,46 @@ public class ProjectController {
         	// Obtener los proyectos desde el servicio
             Page<ProjectDTO> projects = projectService.getAllProjects(pageable);
             if (projects.isEmpty() && page > 0) { //Si está vacia y es mayor a 0, controla la excepción
-                throw new ExceptionPageNotFound("Page not found: the page index is out of range.");
+                throw new ExceptionPageNotFound("The page index is out of range.");
             }
             return ResponseEntity.ok(projects);
         } catch (Exception e) {
-            throw new ExceptionPageNotFound("Page not found: the page index is out of range.");
+            throw new ExceptionPageNotFound("The page index is out of range.");
         }
     }
 	
 	/**
-	 * Método para obtener un proyecto por su nombre. Utiliza el parámetro de ruta {word}
-	 * para buscar un proyecto por su nombre.
+	 * Obtiene un listado de proyectos cuyo nombre contenga una palabra específica, con paginación.
 	 * 
-	 * @param word El nombre del proyecto que se desea buscar.
-	 * @return Devuelve un ResponseEntity que contiene un ProjectDTO, si el proyecto se encuentra.
-	 *         Si el proyecto no se encuentra, devuelve una excepción.
+	 * @param word La palabra a buscar en el nombre del proyecto.
+	 * @param page El número de página a recuperar (por defecto 0).
+	 * @param size El tamaño de la página (por defecto 5).
+	 * @return Una respuesta HTTP que contiene una página de objetos ProjectDTO.
+	 * @throws ExceptionErrorPage Si el índice de la página es menor que cero o el tamaño de la página es menor o igual a cero.
 	 */
 	@GetMapping("/projects/{word}")
 	@Operation(summary = "Obtener proyecto por nombre", 
     description = "Busca un proyecto por su nombre exacto.")
-	public ResponseEntity<ProjectDTO> getProjectByNameWord(@PathVariable String word) {
-		return projectService.getProjectByName(word);
+	public ResponseEntity<Page<ProjectDTO>> getProjectByNameWord(@PathVariable String word,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+		
+		// Validación de la paginación
+        if (page < 0) {
+            throw new ExceptionErrorPage("Page index must not be less than zero.");
+        }
+        if (size <= 0) {
+            throw new ExceptionErrorPage("Page size must be greater than zero.");
+        }
+        
+     // Crear el Pageable con los parámetros pasados
+     Pageable pageable = PageRequest.of(page, size);
+        
+     // Obtener los proyectos desde el servicio
+     Page<ProjectDTO> projects = projectService.getProjectByName(word, pageable);
+            
+     return ResponseEntity.ok(projects);
+        
 	}
 	
 	/**
@@ -146,13 +166,13 @@ public class ProjectController {
 	}
 	
 	/**
-	 * Endpoint para actualizar el estado de un proyecto a "Testing".
+	 * Endpoint Patch para actualizar el estado de un proyecto a "Testing".
 	 *
 	 * @param id el ID del proyecto que se desea actualizar.
 	 * @return una respuesta estructurada del objeto ApiResponse que incluye 
 	 *         un mensaje y el estado.
 	 */
-	@PutMapping("/projects/totesting/{id}")
+	@PatchMapping("/projects/totesting/{id}")
 	@Operation(summary = "Cambiar estado del proyecto a 'Testing'", 
     description = "Actualiza el estado del proyecto a 'Testing'.")
 	public ResponseEntity<ApiResponse<Project>> toTestingProyect(@PathVariable int id){ 
@@ -160,13 +180,13 @@ public class ProjectController {
 	}
 	
 	/**
-	 * Endpoint para actualizar el estado de un proyecto a "In Production".
+	 * Endpoint Patch para actualizar el estado de un proyecto a "In Production".
 	 *
 	 * @param id el ID del proyecto que se desea actualizar.
 	 * @return una respuesta estructurada del objeto ApiResponse que incluye 
 	 *         un mensaje y el estado.
 	 */
-	@PutMapping("/projects/toprod/{id}")
+	@PatchMapping("/projects/toprod/{id}")
 	@Operation(summary = "Cambiar estado del proyecto a 'In Production'", 
     description = "Actualiza el estado del proyecto a 'In Production'.")
 	public ResponseEntity<ApiResponse<Project>> toProductionProyect(@PathVariable int id){ 

@@ -23,6 +23,9 @@ import com.vedruna.serverProject.exceptions.ExceptionProjectNotFound;
 import com.vedruna.serverProject.exceptions.ExceptionTechnologyNotFound;
 import com.vedruna.serverProject.persistance.model.ApiError;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class GlobalControllerError {
 	
@@ -115,6 +118,23 @@ public class GlobalControllerError {
 	    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errors.toString());
 	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
+	
+	//Excepción para manejar un listado de errores producido por la url no válida
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ApiError> handleConstraintViolationException(ConstraintViolationException ex) {
+	    // Extrae los mensajes de error con un bucle
+	    StringBuilder errorMessages = new StringBuilder();
+	    for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+	        errorMessages.append(violation.getMessage());
+	    }
+
+	    // Crea un objeto ApiError
+	    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errorMessages.toString());
+
+	    // Devuelve el error como respuesta
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+
 
 
 	

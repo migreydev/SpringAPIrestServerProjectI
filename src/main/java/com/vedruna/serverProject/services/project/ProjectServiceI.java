@@ -9,15 +9,14 @@ import org.springframework.http.ResponseEntity;
 import com.vedruna.serverProject.dto.ProjectDTO;
 import com.vedruna.serverProject.persistance.model.ApiResponse;
 import com.vedruna.serverProject.persistance.model.Project;
-import com.vedruna.serverProject.persistance.model.Technology;
 
 public interface ProjectServiceI {
 	
 	// Método para obtener un listado de proyectos paginado
 	Page<ProjectDTO> getAllProjects(Pageable pageable);
 	
-	// Método para obtener un proyecto por su nombre, devolviendo un ResponseEntity
-	ResponseEntity<ProjectDTO> getProjectByName(String name);
+	// Método para obtener un listado paginado de proyecto por su nombre.
+	Page<ProjectDTO> getProjectByName(String name, Pageable pageable);
 	
 	//Método para agregar un project, devolviendo un ResponseEntity
 	ResponseEntity<ApiResponse<Project>>addProject(Project project);
