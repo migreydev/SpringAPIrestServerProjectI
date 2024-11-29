@@ -135,13 +135,29 @@ public class TechnologyServiceImpl implements TechnologyServiceI{
 		// Se obtiene la tecnología y el proyecto
 		Technology technology = optionalTechnology.get();
 		Project project = optionalProject.get();
+		
+		// Verificar si ya está asociada la tecnología al proyecto
+	    boolean isAlreadyAssociated = false;
+	    for (Project p : technology.getProjectsHasTechnologies()) {
+	        if (p.getProjectId() == project.getProjectId()) {
+	            isAlreadyAssociated = true;
+	            break; // Salir del bucle si es el mismo id
+	        }
+	    }
+	    
+	    if (isAlreadyAssociated) {
+	    	// Si ya está asociada, devuelve una respuesta indicandolo
+	        ApiResponse<Technology> response = new ApiResponse<>(HttpStatus.OK, "Technology is already associated with the project.");
+	        return ResponseEntity.status(HttpStatus.OK).body(response);
+	    }
+	    
 		// Se asocia el proyecto a la tecnología
 		technology.getProjectsHasTechnologies().add(project);
 		// Se actualiza la tecnología
 		technologyRepository.save(technology);
 		
 		//crea una respuesta estructurada y se devuelve
-		ApiResponse<Technology>response = new ApiResponse<>(HttpStatus.OK, "Developer associated with project successfully");
+		ApiResponse<Technology>response = new ApiResponse<>(HttpStatus.OK, "Technology associated with project successfully");
 	    return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
