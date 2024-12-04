@@ -65,10 +65,10 @@ public class DeveloperController {
 	 * @param developerWorkedDTO un objeto que contiene los IDs del desarrollador y del proyecto.
 	 * @return una respuesta HTTP ApiResponse que incluye una respuesta estructurada.
 	 */
-	@PostMapping("/developers/worked")
+	@PostMapping("/developers/worked/{id}")
 	@Operation(summary = "Asociar un desarrollador a un proyecto", description = "Permite asociar un desarrollador existente con un proyecto.")
-	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(@RequestBody DeveloperWorkedDTO developerWorkedDTO){
-		return developerService.developerHasWorkedOnaProject(developerWorkedDTO);
+	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(@PathVariable int id, @RequestBody DeveloperWorkedDTO developerWorkedDTO){
+		return developerService.developerHasWorkedOnaProject(id, developerWorkedDTO);
 	}
 	
 }

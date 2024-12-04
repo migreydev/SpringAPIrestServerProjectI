@@ -129,10 +129,10 @@ public class DeveloperServiceImpl implements DeveloperServiceI{
 	 * @throws ExceptionProjectNotFound si el proyecto con el ID proporcionado no existe.
 	 */
 	@Override
-	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(DeveloperWorkedDTO developerWorkedDTO) {
+	public ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(int developerId, DeveloperWorkedDTO developerWorkedDTO) {
 		
 		//Busca el developer por el id y se alamcena como Optional
-		Optional<Developer> optionalDeveloper = developerRepository.findById(developerWorkedDTO.getDeveloperId());
+		Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
 		
 		//Si no existe salta una excepción
 		if (!optionalDeveloper.isPresent()) {

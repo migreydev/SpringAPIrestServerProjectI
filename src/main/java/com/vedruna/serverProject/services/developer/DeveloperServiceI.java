@@ -15,6 +15,6 @@ public interface DeveloperServiceI {
 	ResponseEntity<ApiResponse<Developer>> deleteDeveloper(int id);
 	
 	//Método para añadir un developer a un projecto, devolviendo un ResponseEntity con una respuesta estructura.
-	ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(DeveloperWorkedDTO developerWorkedDTO);
+	ResponseEntity<ApiResponse<Developer>> developerHasWorkedOnaProject(int developerId, DeveloperWorkedDTO developerWorkedDTO);
 
 }

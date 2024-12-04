@@ -115,9 +115,9 @@ public class TechnologyServiceImpl implements TechnologyServiceI{
 	 */
 	@Override
 	public ResponseEntity<ApiResponse<Technology>> technologyUsedInProject(
-			TechnologyUsedInProjectDTO technologyUsedInProjectDTO) {
+			int technologyId, TechnologyUsedInProjectDTO technologyUsedInProjectDTO) {
 		//Se obtiene el technology como un optional 
-		Optional<Technology> optionalTechnology = technologyRepository.findById(technologyUsedInProjectDTO.getTechnologyId());
+		 Optional<Technology> optionalTechnology = technologyRepository.findById(technologyId);
 		
 		 // Si no existe, lanza una excepción
 		if(!optionalTechnology.isPresent()) {

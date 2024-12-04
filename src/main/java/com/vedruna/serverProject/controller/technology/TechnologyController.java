@@ -66,11 +66,11 @@ public class TechnologyController {
 	 * @param technologyUsedInProjectDTO un objeto que contiene los IDs de la tecnología y del proyecto.
 	 * @return una respuesta HTTP de @link ApiResponse estructurada.
 	 */
-	@PostMapping("/technologies/used")
+	@PostMapping("/technologies/used/{id}")
 	@Operation(summary = "Asociar tecnología a proyecto", 
     description = "Vincula una tecnología existente con un proyecto específico.")
-	public ResponseEntity<ApiResponse<Technology>> technologyUsedInProject(@RequestBody TechnologyUsedInProjectDTO technologyUsedInProjectDTO){
-		return technologyService.technologyUsedInProject(technologyUsedInProjectDTO);
+	public ResponseEntity<ApiResponse<Technology>> technologyUsedInProject(@PathVariable int id, @RequestBody TechnologyUsedInProjectDTO technologyUsedInProjectDTO){
+		return technologyService.technologyUsedInProject(id, technologyUsedInProjectDTO);
 	}
 
 }
